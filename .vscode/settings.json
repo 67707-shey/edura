@@ -1,0 +1,7 @@
+{
+    "editor.formatOnSave": true,
+    "files.autoSave": "afterDelay",
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.wordWrap": "on",
+    "editor.formatOnPaste": true
+}
