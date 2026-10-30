@@ -6,7 +6,7 @@
   <ul class="sidebar-nav" id="sidebar-nav">
 
     <li class="nav-item">
-      <a class="nav-link " href="#">
+      <a class="nav-link " href="{% url 'core:dashboard' %}">
         <i class="bi bi-grid"></i>
         <span>Dashboard</span>
       </a>
@@ -18,12 +18,12 @@
       </a>
       <ul id="students-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
         <li>
-          <a href="#">
+          <a href="{% url 'students:student_create' %}">
             <i class="bi bi-circle"></i><span>Add Student</span>
           </a>
         </li>
         <li>
-          <a href="#">
+          <a href="{% url 'students:student_list' %}">
             <i class="bi bi-circle"></i><span>Students Directory</span>
           </a>
         </li>
