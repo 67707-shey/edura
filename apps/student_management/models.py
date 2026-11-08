@@ -61,3 +61,10 @@ class Student(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+    def get_age(self):
+        from datetime import date
+        today = date.today()
+        age = today.year - self.birth_date.year - ((today.month, today.day) < (self.birth_date.month, self.birth_date.day))
+        return age
+    

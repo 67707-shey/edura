@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import StudentForm
 from .models import Student
+from django.contrib import messages
 
 # Create your views here.
 def student_list(request):
@@ -8,11 +9,12 @@ def student_list(request):
 
 
     context = {
-        'Students': students,
+        'students': students,
     }
 
     return render(request, 'list.html', context)
 
+# create button----------------------------------------------
 def student_create(request):
 
     if request.method == "POST":
@@ -29,3 +31,46 @@ def student_create(request):
     }
 
     return render(request, 'form.html', context)
+
+# edit button------------------------
+def student_edit(request, pk):
+
+    student = get_object_or_404(Student, pk=pk) #for error display incase the field is not selected
+
+    if request.method == "POST":
+        form = StudentForm(request.POST, request.FILES, instance=student)
+        if form.is_valid():
+            form.save()
+            return redirect("students:student_list")
+
+    form = StudentForm(instance=student)
+
+    context = {
+        'form': form,
+        'title': 'Update Student',
+    }
+
+    return render(request, 'form.html', context)
+
+# for the delete button
+def student_delete(request, pk):
+
+    student = get_object_or_404(Student, pk=pk) #for error display incase the field is not selected
+
+    if request.method == "POST":
+        student.delete()
+        messages.success(request, 'Student deleted successfully.')
+
+
+    return redirect("students:student_list")
+
+def student_profile(request, pk):
+
+    student = get_object_or_404(Student, pk=pk) #for error display incase the field is not selected
+
+    context = {
+        'student': student,
+    }
+
+
+    return render(request, "profile.html", context)
