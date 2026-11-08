@@ -19,6 +19,18 @@
   </nav>
 </div>
 
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <i class="bi bi-check-circle me-1"></i>
+      {{ message }}
+
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+    </div>
+  {% endfor %}
+
+{% endif %}
+
 <section class="section profile">
   <div class="row">
     <div class="col-xl-4">
@@ -133,30 +145,180 @@
             <!-- Overview Tab -->
             <div
               class="tab-pane fade show active profile-overview"
-              id="profile-overview"
-            >
+              id="profile-overview">
               <h5 class="card-title">Personal Information</h5>
-            </div>
+            
 
-            <!-- Academic Info Tab -->
+              <!-- personal information================================================ -->
+                <div class="row mb-3">
+                  <div class="col-lg-3 col-md-4 label fw-bold">
+                    Full Name
+                  </div>
+                  <div class="col-lg-9 col-md-8">
+                    {{ student }}
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-lg-3 col-md-4 label fw-bold">
+                    First Name
+                  </div>
+                  <div class="col-lg-9 col-md-8">
+                    {{ student.first_name }}
+                  </div>
+                </div>
+                
+                <div class="row mb-3">
+                  <div class="col-lg-3 col-md-4 label fw-bold">
+                    Last Name
+                  </div>
+                  <div class="col-lg-9 col-md-8">
+                    {{ student.last_name }}
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-lg-3 col-md-4 label fw-bold">
+                    Gender
+                  </div>
+                  <div class="col-lg-9 col-md-8">
+                    {{ student.get_gender_display }}
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-lg-3 col-md-4 label fw-bold">
+                    Date of Birth
+                  </div>
+                  <div class="col-lg-9 col-md-8">
+                    {{ student.birth_date }}
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-lg-3 col-md-4 label fw-bold">
+                    Age
+                  </div>
+                  <div class="col-lg-9 col-md-8">
+                    {{ student.get_age }}
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-lg-3 col-md-4 label fw-bold">
+                    ID
+                  </div>
+                  <div class="col-lg-9 col-md-8">
+                    <code>
+                      {{ student.id }}
+                    </code>
+                  </div>
+                </div>
+              </div>
+
+            <!-- Academic Info Tab===================================================== -->
             <div class="tab-pane fade profile-overview" id="academic-info">
               <h5 class="card-title">Academic Details</h5>
+
+                <div class="row mb-3">
+                  <div class="col-lg-3 col-md-4 label fw-bold">
+                    Current Level
+                  </div>
+                  <div class="col-lg-9 col-md-8">
+                    {{ student.current_academic_level }}
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-lg-3 col-md-4 label fw-bold">
+                    Enrollment Status
+                  </div>
+                  <div class="col-lg-9 col-md-8">
+                    {% if student.enrollment_status == 'active' %}
+                    <span class="badge bg-success">{{ student.enrollment_status }}</span>
+                    {% elif student.enrollment_status == 'graduated' %}
+                    <span class="badge bg-warning text-dark">{{ student.enrollment_status }}</span>
+                    {% elif student.enrollment_status == 'dismissed' %}
+                    <span class="badge bg-danger">{{ student.enrollment_status }}</span>
+                    {% elif student.enrollment_status == 'transferred' %}
+                    <span class="badge bg-secondary">{{ student.enrollment_status }}</span>
+                    {% endif %}
+                  </div>
+                </div>
+              
+                <div class="row mb-3">
+                  <div class="col-lg-3 col-md-4 label fw-bold">
+                    Enrolled Since
+                  </div>
+                  <div class="col-lg-9 col-md-8">
+                    {{ student.created_at | date:"F d, Y" }}
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-lg-3 col-md-4 label fw-bold">
+                    Last Updated
+                  </div>
+                  <div class="col-lg-9 col-md-8">
+                    {{ student.updated_at }}
+                  </div>
+                </div>
             </div>
+
+          </div>
 
             <!-- Activity Log Tab -->
             <div class="tab-pane fade profile-overview" id="activity-log">
               <h5 class="card-title">Recent Activity</h5>
+               
+              <div class="activity">
+                  <div class="activity-item d-flex align-items-start mb-3">
+                    <div class="activity-item text-muted small me-3">
+                      {{ student.updated_at|timesince }} ago
+                    </div>
+
+                    <div class="activity-icon me-3">
+                      <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                    </div>
+
+                    <div class="activity-details">
+                      <span class="fw-semibold">Profile Updated</span>
+                      <div class="text-muted small">The student information was modified</div>
+                    </div>
+                  
+                  </div>
+                </div>
+
+              <div class="activity">
+                  <div class="activity-item d-flex align-items-start mb-3">
+                    <div class="activity-item text-muted small me-3">
+                      {{ student.created_at|timesince }} ago
+                    </div>
+
+                    <div class="activity-icon me-3">
+                      <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                    </div>
+
+                    <div class="activity-details">
+                      <span class="fw-semibold">Student Enrolled</span>
+                      <div class="text-muted small">Initial Profile was created</div>
+                    </div>
+                  
+                  </div>
+                </div>
+
             </div>
+
           </div>
           <!-- End Bordered Tabs -->
+
         </div>
       </div>
     </div>
   </div>
 </section>
 
-{% for student in students %}
-<div class="modal" tabindex="-1" id="deleteStudent{{ student.pk }}">
+<!-- delete modal ============================================================ -->
+<div class="modal fade" tabindex="-1" id="deleteStudent{{ student.pk }}">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -181,8 +343,7 @@
 
         <form
           action="{% url 'students:student_delete' student.pk %}"
-          method="POST"
-        >
+          method="POST">
           {% csrf_token %}
           <button type="submit" class="btn btn-danger">Delete student</button>
         </form>
@@ -191,4 +352,6 @@
   </div>
 </div>
 
-{% endfor %}{% endblock %} {% block extra_scripts %}{% endblock %}
+{% endblock %} 
+
+{% block extra_scripts %}{% endblock %}

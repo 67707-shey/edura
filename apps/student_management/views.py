@@ -20,10 +20,11 @@ def student_create(request):
     if request.method == "POST":
         form = StudentForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            return redirect("students:student_list")
-
-    form = StudentForm()
+           student =  form.save()
+           messages.success(request, f"Student {student} was created successfully")
+           return redirect("students:student_profile", pk=student.pk)
+    else:
+        form = StudentForm()
 
     context = {
         'form': form,
@@ -40,9 +41,10 @@ def student_edit(request, pk):
     if request.method == "POST":
         form = StudentForm(request.POST, request.FILES, instance=student)
         if form.is_valid():
-            form.save()
-            return redirect("students:student_list")
-
+            student = form.save()
+            messages.success(request, f"Student {student} was updated successfully")
+            return redirect("students:student_profile", pk=student.pk)
+        
     form = StudentForm(instance=student)
 
     context = {
