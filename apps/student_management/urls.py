@@ -1,5 +1,6 @@
 from . import views
 from django.urls import path
+from . import ajax_views
 
 app_name = 'students'
 
@@ -8,5 +9,8 @@ urlpatterns = [
     path("create/", views.student_create, name = "student_create"),
     path("<uuid:pk>/update/", views.student_edit, name = "student_edit"),
     path("<uuid:pk>/delete/", views.student_delete, name = "student_delete"),
-    path("<uuid:pk>/profile/", views.student_profile, name = "student_profile")
+    path("<uuid:pk>/profile/", views.student_profile, name = "student_profile"),
+
+    # AJAX End Points
+    path("ajax/update-profile-picture/", ajax_views.update_student_profile_picture, name="ajax_update_student_profile_picture")
 ]

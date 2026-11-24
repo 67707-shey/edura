@@ -44,8 +44,8 @@ def student_edit(request, pk):
             student = form.save()
             messages.success(request, f"Student {student} was updated successfully")
             return redirect("students:student_profile", pk=student.pk)
-        
-    form = StudentForm(instance=student)
+    else:
+        form = StudentForm(instance=student)
 
     context = {
         'form': form,
@@ -61,10 +61,8 @@ def student_delete(request, pk):
 
     if request.method == "POST":
         student.delete()
-        messages.success(request, 'Student deleted successfully.')
-
-
-    return redirect("students:student_list")
+        messages.success(request, f"Student {student} was deleted successfully")
+        return redirect("students:student_list")
 
 def student_profile(request, pk):
 

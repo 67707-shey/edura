@@ -31,7 +31,7 @@
 
 {% endif %}
 
-<section class="section profile">
+<div class="section profile">
   <div class="row">
     <div class="col-xl-4">
       <div class="card">
@@ -52,8 +52,14 @@
           />
           {% endif %}
 
-          <h2 class="mt3">{{ student }}</h2>
-          <h3 class="mt3">{{ student.get_current_academic_level_display }}</h3>
+          <div class="mt-3">
+            <a href="" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#imageModal">
+              <i class="bi bi-image"></i>Change Photo
+            </a>
+          </div>
+
+          <h2 class="mt-3">{{ student }}</h2>
+          <h3 class="mt-3">{{ student.get_current_academic_level_display }}</h3>
 
           <div class="mt-3">
             {% if student.enrollment_status == 'active' %}
@@ -82,23 +88,23 @@
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Quick Stats</h5>
-          <div class="d-flex flex-column gap-3">
-            <div class="d-flex justify-content-between">
-                <span><i class="bi-calendar-event text-primary"></i>Age:</span>
-                <strong>{{ student.get_age }} years</strong>
-            </div>
-            <div class="d-flex justify-content-between">
-                <span><i class="bi-gender-ambiguous text-primary"></i>Gender:</span>
-                <strong>{{ student.get_gender_display }}</strong>
-            </div>
-            <div class="d-flex justify-content-between">
-                <span><i class="bi-book text-primary"></i>Level:</span>
-                <strong>{{ student.get_current_academic_level_display}}</strong>
-            </div>
-            <div class="d-flex justify-content-between">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Quick Stats</h5>
+            <div class="d-flex flex-column gap-2">
+              <div class="d-flex justify-content-between">
+                  <span><i class="bi-calendar-event text-primary"></i>Age:</span>
+                  <strong>{{ student.get_age }} years</strong>
+              </div>
+              <div class="d-flex justify-content-between">
+                  <span><i class="bi-gender-ambiguous text-primary"></i>Gender:</span>
+                  <strong>{{ student.get_gender_display }}</strong>
+              </div>
+              <div class="d-flex justify-content-between">
+                  <span><i class="bi-book text-primary"></i>Level:</span>
+                  <strong>{{ student.get_current_academic_level_display}}</strong>
+              </div>
+              <div class="d-flex justify-content-between">
                 <span><i class="bi-person-check text-primary"></i>Status:</span>
                 <strong>{{ student.get_enrollment_status_display}}</strong>
             </div>
@@ -106,6 +112,7 @@
         </div>
       </div>
     </div>
+    
 
     <div class="col-xl-8">
       <div class="card">
@@ -116,8 +123,7 @@
               <button
                 class="nav-link active"
                 data-bs-toggle="tab"
-                data-bs-target="#profile-overview"
-              >
+                data-bs-target="#profile-overview">
                 Overview
               </button>
             </li>
@@ -125,8 +131,7 @@
               <button
                 class="nav-link"
                 data-bs-toggle="tab"
-                data-bs-target="#academic-info"
-              >
+                data-bs-target="#academic-info">
                 Academic Info
               </button>
             </li>
@@ -264,8 +269,6 @@
                 </div>
             </div>
 
-          </div>
-
             <!-- Activity Log Tab -->
             <div class="tab-pane fade profile-overview" id="activity-log">
               <h5 class="card-title">Recent Activity</h5>
@@ -314,8 +317,7 @@
         </div>
       </div>
     </div>
-  </div>
-</section>
+    </div>
 
 <!-- delete modal ============================================================ -->
 <div class="modal fade" tabindex="-1" id="deleteStudent{{ student.pk }}">
@@ -330,6 +332,7 @@
           aria-label="Close"
         ></button>
       </div>
+
       <div class="modal-body">
         <div class="text-center mb-3">
           <i class="bi bi-exclamation-triangle-fill text-warning fs-1"></i>
@@ -352,6 +355,293 @@
   </div>
 </div>
 
+<!-- Upload/change profile image modal -->
+<div class="modal fade" tabindex="-1" id="imageModal" aria-labelledby="imageModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalTitle">Edit Profile Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                <div id="browse-section" class="text-center py-4">
+                    <h6 class="mb-3 text-muted">Upload a Profile Picture</h6>
+                    <label id="upload-label" class="btn btn-primary btn-lg" for="uploadImage">
+                        <i class="bi bi-upload me-2"></i>Choose Image
+                    </label>
+                    <input type="file" id="uploadImage" accept="image/jpeg,image/png" class="d-none">
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle"></i> Supported formats: JPG, PNG
+                        </small>
+                    </div>
+                </div>
+
+                <div id="image-container" class="d-none">
+                    <div id="cropper-container" class="w-100" style="height: 360px; overflow: hidden; border-radius: 8px; background: #f8f9fa;">
+                        <img src="" id="imagePreview" alt="Image to crop" style="display: block; max-width: 100%;">
+                    </div>
+                    <p class="small text-muted mt-2 mb-0">Drag the image to position it, then select Crop Image.</p>
+                </div>
+
+                <!-- Keep the footer outside image-container so Close is always available. -->
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" id="btnCrop" class="btn btn-success d-none">
+                    <i class="bi bi-crop me-2"></i>Crop Image
+                </button>
+                <button type="button" id="btnSave" class="btn btn-primary d-none">
+                    <i class="bi bi-check-lg me-2"></i>Save Image
+                </button>
+                <button type="button" id="btnChooseAnother" class="btn btn-outline-secondary d-none">
+                    Choose Another
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg me-2"></i>Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %} 
 
-{% block extra_scripts %}{% endblock %}
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const uploadInput = document.getElementById('uploadImage');
+    const imagePreview = document.getElementById('imagePreview');
+    const browseSection = document.getElementById('browse-section');
+    const imageContainer = document.getElementById('image-container');
+    const cropButton = document.getElementById('btnCrop');
+    const saveButton = document.getElementById('btnSave');
+    const chooseAnotherButton = document.getElementById('btnChooseAnother');
+    const imageModal = document.getElementById('imageModal');
+
+    const updateProfilePictureUrl = "{% url 'students:ajax_update_student_profile_picture' %}";
+    const studentId = "{{ student.pk|escapejs }}";
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+
+    let cropper = null;
+    let croppedImageData = null;
+
+    function show(element) {
+        if (element) element.classList.remove('d-none');
+    }
+
+    function hide(element) {
+        if (element) element.classList.add('d-none');
+    }
+
+    function destroyCropper() {
+        if (cropper) {
+            cropper.destroy();
+            cropper = null;
+        }
+    }
+
+    function resetImageModal() {
+        destroyCropper();
+        croppedImageData = null;
+        uploadInput.value = '';
+        imagePreview.removeAttribute('src');
+        hide(imageContainer);
+        show(browseSection);
+        hide(cropButton);
+        hide(saveButton);
+        hide(chooseAnotherButton);
+        cropButton.disabled = false;
+        saveButton.disabled = false;
+    }
+
+    uploadInput.addEventListener('change', function (event) {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+
+        const allowedTypes = ['image/jpeg', 'image/png'];
+        if (!allowedTypes.includes(file.type)) {
+            Swal.fire({
+                title: 'Invalid file type',
+                text: 'Please select a JPG or PNG image.',
+                icon: 'error'
+            });
+            uploadInput.value = '';
+            return;
+        }
+
+        // Avoid excessively large files causing browser memory/performance issues.
+        if (file.size > 10 * 1024 * 1024) {
+            Swal.fire({
+                title: 'Image is too large',
+                text: 'Please choose an image smaller than 10 MB.',
+                icon: 'warning'
+            });
+            uploadInput.value = '';
+            return;
+        }
+
+        destroyCropper();
+        croppedImageData = null;
+        hide(cropButton);
+        hide(saveButton);
+        hide(chooseAnotherButton);
+        hide(browseSection);
+        show(imageContainer);
+
+        const reader = new FileReader();
+        reader.onerror = function () {
+            resetImageModal();
+            Swal.fire('Could not read image', 'Please try selecting the image again.', 'error');
+        };
+
+        reader.onload = function (loadEvent) {
+            imagePreview.onload = function () {
+                // Initialize only after the browser has decoded the selected image.
+                if (typeof Cropper === 'undefined') {
+                    resetImageModal();
+                    Swal.fire(
+                        'Cropping library unavailable',
+                        'Cropper.js did not load. Check its CSS and JavaScript paths in base.html.',
+                        'error'
+                    );
+                    return;
+                }
+
+                cropper = new Cropper(imagePreview, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    dragMode: 'move',
+                    autoCropArea: 0.85,
+                    responsive: true,
+                    background: false,
+                    movable: true,
+                    zoomable: true,
+                    rotatable: false,
+                    scalable: false,
+                    ready: function () {
+                        show(cropButton);
+                        show(chooseAnotherButton);
+                    }
+                });
+            };
+
+            imagePreview.onerror = function () {
+                resetImageModal();
+                Swal.fire('Invalid image', 'The selected file could not be displayed.', 'error');
+            };
+
+            imagePreview.src = loadEvent.target.result;
+        };
+
+        reader.readAsDataURL(file);
+    });
+
+    cropButton.addEventListener('click', function () {
+        if (!cropper) return;
+
+        const canvas = cropper.getCroppedCanvas({
+            width: 350,
+            height: 350,
+            imageSmoothingEnabled: true,
+            imageSmoothingQuality: 'high'
+        });
+
+        if (!canvas) {
+            Swal.fire('Cropping failed', 'The browser could not create the cropped image. Please try again.', 'error');
+            return;
+        }
+
+        try {
+            croppedImageData = canvas.toDataURL('image/jpeg', 0.9);
+        } catch (error) {
+            console.error('Could not export cropped image:', error);
+            Swal.fire('Cropping failed', 'The cropped image could not be prepared for saving.', 'error');
+            return;
+        }
+
+        destroyCropper();
+        imagePreview.src = croppedImageData;
+        hide(cropButton);
+        hide(chooseAnotherButton);
+        show(saveButton);
+    });
+
+    chooseAnotherButton.addEventListener('click', function () {
+        resetImageModal();
+    });
+
+    saveButton.addEventListener('click', async function () {
+        if (!croppedImageData) {
+            Swal.fire('No cropped image', 'Please select and crop an image before saving.', 'warning');
+            return;
+        }
+
+        saveButton.disabled = true;
+        cropButton.disabled = true;
+
+        Swal.fire({
+            title: 'Uploading...',
+            text: 'Please wait while we save the profile picture.',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: function () { Swal.showLoading(); }
+        });
+
+        try {
+            // Preserve the existing endpoint contract: JSON containing student_id and image.
+            const response = await fetch(updateProfilePictureUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    ...(csrfToken ? { 'X-CSRFToken': csrfToken } : {})
+                },
+                body: JSON.stringify({
+                    student_id: studentId,
+                    image: croppedImageData
+                })
+            });
+
+            const contentType = response.headers.get('content-type') || '';
+            if (!contentType.includes('application/json')) {
+                throw new Error('The server did not return JSON. Check the Django view and server logs.');
+            }
+
+            const data = await response.json();
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || `Upload failed (HTTP ${response.status}).`);
+            }
+
+            await Swal.fire({
+                title: 'Success',
+                text: data.message || 'Profile picture updated successfully.',
+                icon: 'success',
+                timer: 1800,
+                showConfirmButton: false
+            });
+
+            if (data.redirect_url) {
+                window.location.href = data.redirect_url;
+            } else {
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error('Profile picture upload failed:', error);
+            saveButton.disabled = false;
+            cropButton.disabled = false;
+            Swal.fire({
+                title: 'Upload failed',
+                text: error.message || 'An unexpected error occurred.',
+                icon: 'error'
+            });
+        }
+    });
+
+    // Return to the initial state whenever the modal is closed.
+    imageModal.addEventListener('hidden.bs.modal', resetImageModal);
+});
+</script>
+{% endblock %}

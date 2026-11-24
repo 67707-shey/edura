@@ -25,6 +25,17 @@
   </nav>
 </div>
 
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <i class="bi bi-check-circle me-1"></i>
+      {{ message }}
+
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+    </div>
+  {% endfor %}
+{% endif %}
+
 <section class="section dashboard">
   <div class="row">
     <div class="col-12">
